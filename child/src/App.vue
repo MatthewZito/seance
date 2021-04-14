@@ -12,13 +12,14 @@ export default {
     
     observer.sequence()
       .then((api) => {
-        api.set([{ key1: 'value1'}, { key2: 'value2' }]);
+        api.set([{ key1: 'value1'}, { key2: 'value2' }], console.log);
       }).catch(() => console.log('WWWWWW'))
       .finally(a => a);
 
     observer.sequence()
       .then((api) => {
-        console.log(api.get(['key']));
+        console.log({ api });
+        api.get(['key'], (error, response) => console.log(error, response));
       });
 
     console.log({ observer });

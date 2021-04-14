@@ -15,6 +15,7 @@ export default new VueRouter({
       component: Home
     },
     {
+
       path: '/about',
       name: 'About',
       component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
