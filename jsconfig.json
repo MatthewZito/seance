@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+      "module": "commonjs",
+      "target": "esnext",
+      "allowSyntheticDefaultImports": true,
+      "baseUrl": ".",
+      "paths": {
+        "@forbearance": ["./lib/index.js"]
+      }
+    }
+  }
