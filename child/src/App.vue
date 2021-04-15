@@ -1,9 +1,9 @@
 <script>
-import { initObserver } from '@forbearance';
+import { initObserver } from '@kibbutz';
 
 export default {
   name: 'App',
-  mounted () {
+  async mounted () {
     const observer = initObserver({
       parentOrigin: 'http://localhost:8000',
       created: (id) => console.log({ CREATED: id }),
@@ -11,18 +11,26 @@ export default {
     });
     
     observer.sequence()
-      .then((api) => {
+      .then(api => {
         api.set([{ key1: 'value1'}, { key2: 'value2' }], console.log);
-      }).catch(() => console.log('WWWWWW'))
-      .finally(a => a);
+      })
+        .catch(() => console.log('ECONN:ERR'));
 
     observer.sequence()
-      .then((api) => {
-        console.log({ api });
-        api.get(['key'], (error, response) => console.log(error, response));
-      });
+      .then(api => {
+        api.get(['key1'], (error, response) => console.log({error}, 'RES: ', {response}));
+      })
+        .catch(() => console.log('ECONN:ERR'));
 
-    console.log({ observer });
+    observer.sequence()
+      .then(api => {
+        api.delete(['key2'], (error, response) => {
+          if (error) console.log('An error occurred, see: ', {error});
+          else console.log({ response });
+        });
+      })
+        .catch(() => console.log('ECONN:ERR'));
+      
   }
 };
 </script>

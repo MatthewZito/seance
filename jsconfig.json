@@ -5,7 +5,7 @@
       "allowSyntheticDefaultImports": true,
       "baseUrl": ".",
       "paths": {
-        "@forbearance": ["./lib/index.js"]
+        "@kibbutz": ["./lib/index.js"]
       }
     }
   }

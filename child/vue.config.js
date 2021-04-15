@@ -10,7 +10,7 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        '@forbearance': resolveAbsolute('../lib/index.js'),
+        '@kibbutz': resolveAbsolute('../lib/index.js'),
       }
     }
   }
