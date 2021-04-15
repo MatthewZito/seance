@@ -1,5 +1,5 @@
 <script>
-import { initObservable } from '@forbearance';
+import { initObservable } from '@kibbutz';
 
 export default {
   name: 'App',
