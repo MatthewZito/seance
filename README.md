@@ -1,6 +1,7 @@
 # Séance | Cross-origin State Sharing
 
-Séance enables cross-domain state sharing via the Browser's local storage.
+Séance enables cross-domain state sharing via the browser's local storage.
+
 
 A Séance can be agreed upon by any number of domains. A `Seance` instance is initialized at the domain you want to serve as the *provider*. Each domain that subscribes to this shared state registers a `Medium`, allowing it to observe the shared state, and perform read / write transactions with it.
 
@@ -8,7 +9,17 @@ A Séance can be agreed upon by any number of domains. A `Seance` instance is in
 
 `Mediums` poll the `Seance` connection in a handshake exchange series of SYN/ACK messages. If at any point the connection is lost, interrupted, or ended, the `sequence` will reject.
 
-## Usage
+## Table of Contents
+
+- [Supported Environments](#builds)
+- [Installation + Usage](#usage)
+- [Documentation / API](#docs)
+
+## <a name="builds"></a> Supported Environments
+
+`seance` is a frontend system that currently supports UMD and ESM build-targets. Is your preferred build not supported? Open an issue!
+
+## <a name="usage"></a> Installation and Usage
 
 Initializing a `Seance`:
 
@@ -68,3 +79,5 @@ medium.sequence()
   .catch(handleConnErr);
 
 ```
+
+## <a name="docs"></a> Documentation and API
