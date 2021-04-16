@@ -1,10 +1,10 @@
 <script>
-import { initObservable } from '@kibbutz';
+import { Seance } from 'seance';
 
 export default {
   name: 'App',
   mounted () {
-    initObservable(['http://localhost:8001'], 
+    Seance(['http://localhost:8001'], 
     { logger: true });
   }
 };
@@ -12,10 +12,13 @@ export default {
  
 <template>
   <div id="app">
-    <div>hello</div>
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/">
+        Home
+      </router-link> |
+      <router-link to="/about">
+        About
+      </router-link>
     </div>
     <router-view/>
   </div>

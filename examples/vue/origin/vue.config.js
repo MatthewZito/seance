@@ -10,7 +10,7 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        '@kibbutz': resolveAbsolute('../lib/index.js'),
+        'seance': resolveAbsolute('../../../lib/index.js'),
       }
     }
   }

@@ -3,8 +3,3 @@ node_modules
 repl.js
 coverage
 dist
-app1
-app2
-examples
-origin/*
-child/*

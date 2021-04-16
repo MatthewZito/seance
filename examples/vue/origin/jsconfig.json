@@ -3,10 +3,10 @@
       "module": "commonjs",
       "target": "esnext",
       "allowSyntheticDefaultImports": true,
-      "baseUrl": "./src",
+      "baseUrl": ".",
       "paths": {
-        "@forbearance": ["../../lib/index.js"],
-        "@/*": ["*"]
+        "@seance": ["../../../lib/index.js"],
+        "@/*": ["src/*"]
       }
     }
   }
