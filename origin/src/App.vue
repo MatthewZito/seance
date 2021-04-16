@@ -4,13 +4,15 @@ import { initObservable } from '@kibbutz';
 export default {
   name: 'App',
   mounted () {
-    initObservable(['http://localhost:8001']);
+    initObservable(['http://localhost:8001'], 
+    { logger: true });
   }
 };
 </script>
-
+ 
 <template>
   <div id="app">
+    <div>hello</div>
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>

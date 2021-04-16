@@ -18,7 +18,7 @@ export default {
 
     observer.sequence()
       .then(api => {
-        api.get(['key1'], (error, response) => console.log({error}, 'RES: ', {response}));
+        api.get(['key1'], (error, response) => console.log({error}, 'RES: ', {response}))
       })
         .catch(() => console.log('ECONN:ERR'));
 
