@@ -44,6 +44,7 @@ describe('Evaluation of Seance proxying', () => {
   describe('DOM state', () => {
     it('appends the iframe as a child of the document body', () => {
       expect(document.body.children.length).toBe(1);
+      expect(document.body.children[0]).toEqual(frame);
     });
   });
 });

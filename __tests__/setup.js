@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom';
 
 beforeEach(() => {
-  window.postMessage = jest.fn();
+  global.postMessage = window.postMessage = jest.fn();
+  jest.useFakeTimers();
 });
 
 afterEach(() => {
