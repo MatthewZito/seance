@@ -7,8 +7,13 @@
     "dist/"
   ],
   "scripts": {
+    "clean": "rimraf ./coverage && npm run prebuild",
+    "flags": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1",
     "lint": "eslint 'lib/**/*.js' --no-fix",
-    "lint:fix": "eslint 'lib/**/*.js' --fix"
+    "lint:fix": "eslint 'lib/**/*.js' --fix",
+    "test": "npm run flags && jest && npm run clean",
+    "prebuild": "rimraf ./dist",
+    "test:mon": "npm run flags && jest --watch _tests_.* && npm run clean"
   },
   "author": "Matthew Zito goldmund@freenode",
   "license": "MIT",
@@ -33,16 +38,47 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
+  "jest": {
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/__tests__/setup.js"
+    ],
+    "testRegex": ".test.js$",
+    "coverageDirectory": "./coverage",
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "lib/**/*.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    },
+    "errorOnDeprecated": true,
+    "verbose": true
+  },
   "devDependencies": {
     "@babel/core": "7.13.15",
+    "@babel/plugin-transform-runtime": "7.13.15",
+    "@babel/preset-env": "7.13.15",
     "@commitlint/cli": "12.1.1",
     "@commitlint/config-conventional": "12.1.1",
+    "@testing-library/jest-dom": "5.11.10",
     "babel-eslint": "10.1.0",
+    "babel-jest": "26.6.3",
+    "core-js": "3.10.1",
     "cross-env": "7.0.3",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "7.24.0",
     "husky": "4.3.8",
+    "jest": "26.6.3",
     "js-heuristics": "1.1.0",
-    "lint-staged": "10.5.4"
+    "lint-staged": "10.5.4",
+    "rimraf": "3.0.2"
   }
 }
