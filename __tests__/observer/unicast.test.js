@@ -1,4 +1,11 @@
-import { EVENT_TYPES, QUERY_TYPES, TIMERS, IDENTIFIERS, purgePromiseJobs } from '../../lib/utils';
+import {
+  EVENT_TYPES,
+  QUERY_TYPES,
+  TIMERS,
+  IDENTIFIERS,
+  purgePromiseJobs
+ } from '../../lib/utils';
+
 import { Observer } from '../../lib/core';
 
 function payload ({ id = IDENTIFIERS.DESTROY_ID, error = null, result = EVENT_TYPES.CLOSE } = {}) {
@@ -144,7 +151,7 @@ describe('Evaluation of outbound, unicast messages and communications', () => {
 
     medium.preflight = TIMERS.CONN_FULFILLED;
 
-    const args = [{ key: 'val' }, { key2: 'val2' }];
+    const args = ['key1', 'key2'];
     const cb = jest.fn();
 
     await medium.sequence()

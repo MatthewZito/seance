@@ -307,14 +307,26 @@ describe('Evaluation of public API', () => {
       });
     });
 
-    it.todo('throws if provided arguments array contains types other than objects');
+    it('throws if provided arguments array contains types other than objects', async () => {
+      const medium = new Observer({
+        seanceOrigin
+      });
+
+      medium.init();
+
+      medium.preflight = TIMERS.CONN_FULFILLED;
+
+      const api = await medium.sequence()
+        .then(api => api);
+
+      expect(() => api.set([{ a: 1, b: 2 }])).not.toThrow();
+      expect(() => api.set(['a', 1])).toThrow();
+    });
 
     it.todo('*** throws if not initialized via a sequence');
   });
 
   describe('API method `delete`', () => {
-    it.todo('throws if provided arguments array contains types other than objects');
-
     it.todo('*** throws if not initialized via a sequence');
   });
 
