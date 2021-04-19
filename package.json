@@ -11,9 +11,9 @@
     "flags": "cross-env NODE_OPTIONS=--experimental-vm-modules NODE_NO_WARNINGS=1",
     "lint": "eslint 'lib/**/*.js' --no-fix",
     "lint:fix": "eslint 'lib/**/*.js' --fix",
-    "test": "npm run flags && jest && npm run clean",
+    "test": "npm run flags && jest --runInBand && npm run clean",
     "prebuild": "rimraf ./dist",
-    "test:mon": "npm run flags && jest --watch _tests_.* && npm run clean"
+    "test:mon": "npm run flags && jest --runInBand --watch _tests_.* && npm run clean"
   },
   "author": "Matthew Zito goldmund@freenode",
   "license": "MIT",

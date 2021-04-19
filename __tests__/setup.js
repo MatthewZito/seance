@@ -7,5 +7,8 @@ beforeEach(() => {
 
 afterEach(() => {
   jest.clearAllMocks();
+  document.head.innerHTML = ''
 });
+
+
 

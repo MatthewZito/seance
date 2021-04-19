@@ -81,3 +81,7 @@ medium.sequence()
 ```
 
 ## <a name="docs"></a> Documentation and API
+
+## Testing
+
+This package is tested with Jest and JSDOM. Test suites *must* be run serially with `--runInBand` to avoid cross-pool propagation of events.
