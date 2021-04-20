@@ -7,7 +7,7 @@ export default {
     const medium = Medium({
       seanceOrigin: 'http://localhost:8000',
       created: this.onCreate,
-      destroyed: this.onDestroy
+      destroyed: this.beforeDestroy
     });
     
     const keysToSet = [{ key1: 'value1'}, { key2: 'value2' }];
@@ -47,7 +47,7 @@ export default {
     onCreate (uuid) {
       console.log(`A new Medium with uuid ${uuid} has been instantiated`);
     },
-    onDestroy (uuid) {
+    beforeDestroy (uuid) {
       console.log(`The Medium with uuid ${uuid} has been destroyed`);
     }
   }

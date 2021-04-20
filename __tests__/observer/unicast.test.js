@@ -375,8 +375,8 @@ describe('Evaluation of inbound messages and communications', () => {
 
     purgePromiseJobs().then(() => {
       expect(cb).toHaveBeenCalled();
-      expect(cb).toBeCalledTimes(1);
-      expect(cb).toBeCalledWith(null, callbackResult);
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect(cb).toHaveBeenCalledWith(null, callbackResult);
     });
   });
 
@@ -420,8 +420,8 @@ describe('Evaluation of inbound messages and communications', () => {
 
     purgePromiseJobs().then(() => {
       expect(cb).toHaveBeenCalled();
-      expect(cb).toBeCalledTimes(1);
-      expect(cb).toBeCalledWith(null, callbackResult);
+      expect(cb).toHaveBeenCalledTimes(1);
+      expect(cb).toHaveBeenCalledWith(null, callbackResult);
 
       // responses map should be empty
       expect(medium.responses.size).toBe(0);

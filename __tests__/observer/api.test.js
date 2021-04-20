@@ -209,12 +209,12 @@ describe('Evaluation of public API', () => {
 
       purgePromiseJobs().then(() => {
         expect(cb1).toHaveBeenCalled();
-        expect(cb1).toBeCalledTimes(1);
-        expect(cb1).toBeCalledWith(null, 'no');
+        expect(cb1).toHaveBeenCalledTimes(1);
+        expect(cb1).toHaveBeenCalledWith(null, 'no');
 
         expect(cb2).toHaveBeenCalled();
-        expect(cb2).toBeCalledTimes(1);
-        expect(cb2).toBeCalledWith(null, 'OK');
+        expect(cb2).toHaveBeenCalledTimes(1);
+        expect(cb2).toHaveBeenCalledWith(null, 'OK');
       });
     });
 
@@ -298,12 +298,12 @@ describe('Evaluation of public API', () => {
 
       purgePromiseJobs().then(() => {
         expect(cb1).toHaveBeenCalled();
-        expect(cb1).toBeCalledTimes(1);
-        expect(cb1).toBeCalledWith(null, 'no');
+        expect(cb1).toHaveBeenCalledTimes(1);
+        expect(cb1).toHaveBeenCalledWith(null, 'no');
 
         expect(cb2).toHaveBeenCalled();
-        expect(cb2).toBeCalledTimes(1);
-        expect(cb2).toBeCalledWith(null, 'OK');
+        expect(cb2).toHaveBeenCalledTimes(1);
+        expect(cb2).toHaveBeenCalledWith(null, 'OK');
       });
     });
 

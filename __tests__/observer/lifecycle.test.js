@@ -21,20 +21,20 @@ describe('Evaluation of Medium lifecycles', () => {
     medium.init();
 
     it('invokes `poll` when initialized', () => {
-      expect(pollMock).toBeCalled();
-      expect(pollMock).toBeCalledTimes(1);
+      expect(pollMock).toHaveBeenCalled();
+      expect(pollMock).toHaveBeenCalledTimes(1);
     });
 
     it ('does not invoke the provided `created` callback prior to mounting', () => {
-      expect(createdMock).not.toBeCalled();
-      expect(createdMock).toBeCalledTimes(0);
+      expect(createdMock).not.toHaveBeenCalled();
+      expect(createdMock).toHaveBeenCalledTimes(0);
     });
 
     it('invokes `mount` when \'load\' event has been fired', () => {
       window.dispatchEvent(new Event('load'));
 
-      expect(mountMock).toBeCalled();
-      expect(mountMock).toBeCalledTimes(1);
+      expect(mountMock).toHaveBeenCalled();
+      expect(mountMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -53,14 +53,14 @@ describe('Evaluation of Medium lifecycles', () => {
     it ('invokes the provided `created` callback once mounted', () => {
       window.dispatchEvent(new Event('load'));
 
-      expect(createdMock).toBeCalled();
-      expect(createdMock).toBeCalledTimes(1);
+      expect(createdMock).toHaveBeenCalled();
+      expect(createdMock).toHaveBeenCalledTimes(1);
     });
 
     it('invokes the provided `created` callback with the Medium\'s uuid', () =>{
       window.dispatchEvent(new Event('load'));
 
-      expect(createdMock).toBeCalledWith(medium.uuid);
+      expect(createdMock).toHaveBeenCalledWith(medium.uuid);
     });
   });
 
@@ -80,15 +80,15 @@ describe('Evaluation of Medium lifecycles', () => {
     medium.init();
 
     it ('does not invoke the provided `destroyed` callback prior to unMounting', () => {
-      expect(destroyedMock).not.toBeCalled();
-      expect(destroyedMock).toBeCalledTimes(0);
+      expect(destroyedMock).not.toHaveBeenCalled();
+      expect(destroyedMock).toHaveBeenCalledTimes(0);
     });
 
     it('invokes `unMount` when \'beforeunload\' event has been fired', () => {
       window.dispatchEvent(new Event('beforeunload'));
 
-      expect(unMountMock).toBeCalled();
-      expect(unMountMock).toBeCalledTimes(1);
+      expect(unMountMock).toHaveBeenCalled();
+      expect(unMountMock).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -110,14 +110,14 @@ describe('Evaluation of Medium lifecycles', () => {
     it ('invokes the provided `destroyed` callback once unMounted', () => {
       window.dispatchEvent(new Event('beforeunload'));
 
-      expect(destroyedMock).toBeCalled();
-      expect(destroyedMock).toBeCalledTimes(1);
+      expect(destroyedMock).toHaveBeenCalled();
+      expect(destroyedMock).toHaveBeenCalledTimes(1);
     });
 
     it('invokes the provided `destroyed` callback with the Medium\'s uuid', () =>{
       window.dispatchEvent(new Event('beforeunload'));
 
-      expect(destroyedMock).toBeCalledWith(medium.uuid);
+      expect(destroyedMock).toHaveBeenCalledWith(medium.uuid);
     });
   });
 
@@ -133,9 +133,8 @@ describe('Evaluation of Medium lifecycles', () => {
 
       medium.init();
 
-      expect(mock).toBeCalled();
-      expect(mock).toBeCalledTimes(3);
-      // will have been fired 12 times due to propagation
+      expect(mock).toHaveBeenCalled();
+      expect(mock).toHaveBeenCalledTimes(3);
 
       expect(mock.mock.calls[0].includes('message')).toBe(true);
       expect(mock.mock.calls[1].includes('load')).toBe(true);
@@ -157,7 +156,7 @@ describe('Evaluation of Medium lifecycles', () => {
 
       window.dispatchEvent(new Event('beforeunload'));
 
-      expect(mock).toBeCalled();
+      expect(mock).toHaveBeenCalled();
 
       expect(mock.mock.calls[0].includes('message')).toBe(true);
       expect(mock.mock.calls[1].includes('load')).toBe(true);
