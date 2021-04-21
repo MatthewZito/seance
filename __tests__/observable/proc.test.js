@@ -1,23 +1,70 @@
-import { Observable } from '../../lib/core';
+import { QUERY_TYPES } from '../../lib/utils';
 
 describe('Evaluation of Seance transaction processing', () => {
   describe('Processor', () => {
-    it.todo('attempts to invoke a corresponding API method');
-    it.todo('tenders an error message give the occurrence of a caught exception');
+    it('tenders an error message give the occurrence of a caught exception', () => {
+      const [observed, origin] = initTransaction('emit');
+
+      localStorage.getItem = jest.fn();
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({
+          id: 1,
+          type: QUERY_TYPES.GET,
+          payload: { a: 1 }
+        })
+      }));
+
+      expect(observed.mock.calls[1][0].result).toBe(null);
+      expect(observed.mock.calls[1][0].error).not.toBe(null);
+    });
   });
 
-  describe('Get', () => {
-    it.todo('allocates from localstorage the values for all specified keys into a results array');
-    it.todo('pushes `null` corresponding value given non-extant storage keys');
-  });
+  describe('localStorage interface', () => {
+    it('allocates from localStorage the values for all specified keys into a results array', () => {
+      const [observed, origin] = initTransaction('emit');
 
-  describe('Set', () => {
-    it.todo('sets all specified key/val pairs into localstorage, pushing into a results array a boolean result for ea');
-    it.todo('pushes `false` corresponding value given exceptions in setting');
-  });
+      const key = 'key';
+      const value = '99';
 
-  describe('Delete', () => {
-    it.todo('deletes all specified keys from localstorage, pushing into a results array a boolean result for ea');
-    it.todo('pushes `false` corresponding value given exceptions in setting');
+      localStorage.setItem(key, value);
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({
+          id: 1,
+          type: QUERY_TYPES.GET,
+          payload: [key]
+        })
+      }));
+
+      expect(observed.mock.calls[1][0].result).not.toBe(null);
+      expect(observed.mock.calls[1][0].result).toEqual([{ [key]: value }]);
+
+      expect(observed.mock.calls[1][0].error).toBe(null);
+    });
+
+    it('pushes `null` corresponding value given non-extant storage keys', () => {
+      const [observed, origin] = initTransaction('emit');
+
+      const key = 'key';
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({
+          id: 1,
+          type: QUERY_TYPES.GET,
+          payload: [key]
+        })
+      }));
+
+      expect(observed.mock.calls[1][0].result).not.toBe(null);
+      expect(observed.mock.calls[1][0].result).toEqual([{ [key]: null }]);
+
+      expect(observed.mock.calls[1][0].error).toBe(null);
+    });
+
+    it.todo('pushes `false` corresponding value given erroneous storage operations');
   });
 });

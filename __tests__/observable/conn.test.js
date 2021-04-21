@@ -1,22 +1,7 @@
-import { EVENT_TYPES, generateUUID, IDENTIFIERS, nullify } from '../../lib/utils';
+import { EVENT_TYPES, generateUUID, nullify, QUERY_TYPES } from '../../lib/utils';
 import { Observable } from '../../lib/core';
 
 const origins = ['http://localhost:8001', 'http://localhost:8002'];
-
-function payload ({ id = 1, type = EVENT_TYPES.MOUNT, payload = ['key'] } = {}) {
-  return JSON.stringify({
-    id,
-    type,
-    payload
-  });
-}
-
-function message ({ origin = 'http://localhost:8001', data = payload() } = {}) {
-  return new MessageEvent('message', {
-    origin,
-    data
-  });
-}
 
 describe('Evaluation of medium intake', () => {
   describe('incorporate', () => {
@@ -112,19 +97,206 @@ describe('Evaluation of medium intake', () => {
   });
 
   describe('recv', () => {
-    it.todo('returns if the payload is absent either an origin or data');
-    it.todo('returns if the data is not a serialized (string) payload');
-    it.todo('returns if the sender origin is not extant in the pool');
-    it.todo('returns if an id, type, or payload is absent from the deserialized data object');
+    it('returns if the payload is absent either an origin(todo) or data', () => {
+      const origin = 'http://localhost/';
+
+      const seance = new Observable([origin]);
+      seance.logger = nullify;
+
+      seance.init();
+
+      const observed = jest.spyOn(seance.pool, 'findIndex');
+
+      window.dispatchEvent(message({ origin, data: false }));
+
+      expect(observed).not.toHaveBeenCalled();
+    });
+
+    it('returns if the data is not a serialized (string) payload', () => {
+      const origin = 'http://localhost/';
+
+      const seance = new Observable([origin]);
+      seance.logger = nullify;
+
+      seance.init();
+
+      const observed = jest.spyOn(seance.pool, 'findIndex');
+
+      window.dispatchEvent(message(new MessageEvent('message', {
+        origin,
+        data: { a: 1, b: 2 }
+      })));
+
+      expect(observed).not.toHaveBeenCalled();
+    });
+
+    it('returns if the sender origin is not extant in the pool', () => {
+      const origin = 'http://localhost/';
+
+      const seance = new Observable([origin]);
+      seance.logger = nullify;
+
+      seance.init();
+
+      // first, register the medium
+      window.dispatchEvent(message({
+        origin,
+        data: payload({ payload: generateUUID() })
+      }));
+
+      seance.logger = jest.fn();
+
+      window.dispatchEvent(message({ origin: 'x' }));
+
+      expect(seance.logger).not.toHaveBeenCalled();
+    });
+
+    it('returns if an id, type, or payload is absent from the deserialized data object', () => {
+      const origin = 'http://localhost/';
+
+      const seance = new Observable([origin]);
+      seance.logger = nullify;
+
+      const observed = jest.spyOn(seance.pool, 'findIndex');
+
+      seance.init();
+
+      // first, register the medium
+      window.dispatchEvent(message({
+        origin,
+        data: payload({ payload: generateUUID() })
+      }));
+
+      seance.logger = jest.fn();
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({ payload: null })
+      }));
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({ type: null })
+      }));
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({ id: null })
+      }));
+
+      expect(observed).toHaveBeenCalledTimes(4);
+      expect(seance.logger).not.toHaveBeenCalled();
+    });
 
     // assuming valid sender
-    it.todo('invokes `incorporate` with the sender origin, id upon receipt of a MOUNT signal');
-    it.todo('invokes `eject` with the sender origin, id upon receipt of a UNMOUNT signal');
-    it.todo('emits a SYN response upon receipt of a ACK signal');
+    it('invokes `incorporate` with the sender origin, id upon receipt of a MOUNT signal', () => {
+      const [observed, origin] = initTransaction('incorporate');
 
-    it.todo('invokes `get` with the deserialized data, sender origin upon receipt of a GET signal');
-    it.todo('invokes `set` with the deserialized data, sender origin upon receipt of a SET signal');
-    it.todo('invokes `delete` with the deserialized data, sender origin upon receipt of a DELETE signal');
-    it.todo('returns if the event type is not a registered event');
+      expect(observed).toHaveBeenCalled();
+      expect(observed).toHaveBeenCalledTimes(1);
+      expect(observed).toBeCalledWith(origin, 1);
+    });
+
+    it('invokes `eject` with the sender origin, id upon receipt of a UNMOUNT signal', () => {
+      const [observed, origin] = initTransaction('eject');
+
+      expect(observed).not.toHaveBeenCalled();
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({
+          id: 1,
+          type: EVENT_TYPES.UNMOUNT
+        })
+      }));
+
+      expect(observed).toHaveBeenCalled();
+      expect(observed).toHaveBeenCalledTimes(1);
+      expect(observed).toHaveBeenCalledWith(origin, 1);
+    });
+
+    it('emits a SYN response upon receipt of a ACK signal', () => {
+      const [observed, origin] = initTransaction('emit');
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({
+          id: 1,
+          type: EVENT_TYPES.SYN
+        })
+      }));
+
+      expect(observed).toHaveBeenCalled();
+      expect(observed).toHaveBeenCalledTimes(2);
+      expect(observed).toHaveBeenCalledWith({
+        id: 1,
+        error: null,
+        result: EVENT_TYPES.ACK
+      }, origin);
+    });
+
+    it('invokes `get` with the sender\'s payload upon receipt of a GET signal', () => {
+      const [observed, origin] = initTransaction('get');
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({
+          id: 1,
+          type: QUERY_TYPES.GET
+        })
+      }));
+
+      expect(observed).toHaveBeenCalled();
+      expect(observed).toHaveBeenCalledTimes(1);
+      expect(observed).toHaveBeenCalledWith(['key']);
+    });
+
+    it('invokes `set` with the sender\'s payload upon receipt of a SET signal', () => {
+      const [observed, origin] = initTransaction('set');
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({
+          id: 1,
+          type: QUERY_TYPES.SET,
+          payload: [{ key: 'v' }]
+        })
+      }));
+
+      expect(observed).toHaveBeenCalled();
+      expect(observed).toHaveBeenCalledTimes(1);
+      expect(observed).toHaveBeenCalledWith([{ key: 'v' }]);
+    });
+
+    it('invokes `delete` with the sender\'s payload upon receipt of a DELETE signal', () => {
+      const [observed, origin] = initTransaction('delete');
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({
+          id: 1,
+          type: QUERY_TYPES.DELETE
+        })
+      }));
+
+      expect(observed).toHaveBeenCalled();
+      expect(observed).toHaveBeenCalledTimes(1);
+      expect(observed).toHaveBeenCalledWith(['key']);
+    });
+
+    it('returns if the event type is not a registered event', () => {
+      const [observed, origin] = initTransaction('processAction');
+
+      window.dispatchEvent(message({
+        origin,
+        data: payload({
+          id: 1,
+          type: 'QUERY_TYPES',
+          payload: [{ key: 'v' }]
+        })
+      }));
+
+      expect(observed).not.toHaveBeenCalled();
+    });
   });
 });
