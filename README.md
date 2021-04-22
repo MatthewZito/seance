@@ -2,18 +2,19 @@
 
 Séance enables cross-domain state sharing via the browser's local storage.
 
-
 A Séance can be agreed upon by any number of domains. A `Seance` instance is initialized at the domain you want to serve as the *provider*. Each domain that subscribes to this shared state registers a `Medium`, allowing it to observe the shared state, and perform read / write transactions with it.
 
-`Mediums` use iframes to proxy the `Seance` provider. When initialized, a `Seance` will listen for any `Medium` in its list of registered domains (this can be explicit strings or a group of regular expressions). Once a `Medium` registers itself with the `Seance`, it can begin a `sequence`. A `sequence` is a Promise that when fulfilled provides an API exposing `get`, `set`, `delete`, and `enumerate` operations that read from and write to the shared state.
+Mediums use iframes to proxy the Seance provider. When initialized, a Seance will listen for any Medium in its list of registered domains (this can be explicit strings or a group of regular expressions). Once a Medium registers itself with the Seance, it can begin a `sequence`. A `sequence` is a Promise that when fulfilled provides an API exposing `get`, `set`, `delete`, and `enumerate` operations that read from and write to the shared state.
 
-`Mediums` poll the `Seance` connection in a handshake exchange series of SYN/ACK messages. If at any point the connection is lost, interrupted, or ended, the `sequence` will reject.
+Mediums poll the Seance connection in a handshake exchange series of SYN/ACK messages. If at any point the connection is lost, interrupted, or ended, the `sequence` will reject.
 
 ## Table of Contents
 
 - [Supported Environments](#builds)
 - [Installation + Usage](#usage)
 - [Documentation / API](#docs)
+- [Upcoming Features](#upcoming)
+- [Testing](#test)
 
 ## <a name="builds"></a> Supported Environments
 
@@ -21,11 +22,23 @@ A Séance can be agreed upon by any number of domains. A `Seance` instance is in
 
 ## <a name="usage"></a> Installation and Usage
 
+Install:
+
+```bash
+npm install seance-js
+```
+
+or
+
+```bash
+yarn add seance-js
+```
+
 Initializing a `Seance`:
 
 ```js
 // at https://domain.com
-import { Seance } from 'seance';
+import { Seance } from 'seance-js';
 
 Seance(['https://otherdomain.com']);
 ```
@@ -34,7 +47,7 @@ Registering `Mediums`:
 
 ```js
 // at https://otherdomain.com
-import { Medium } from 'seance';
+import { Medium } from 'seance-js';
 
 function handleConnErr (ex) { ... }
 
@@ -82,6 +95,13 @@ medium.sequence()
 
 ## <a name="docs"></a> Documentation and API
 
-## Testing
+## <a name="upcoming"></a> Upcoming Features
+
+- permissions
+- `enumerate` and `clear` APIs
+- adapters for different browser storage types
+- IE support
+
+## <a name="test"></a> Testing
 
 This package is tested with Jest and JSDOM. Test suites *must* be run serially with `--runInBand` to avoid cross-pool propagation of events.
