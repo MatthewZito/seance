@@ -1,3 +1,4 @@
+import { nullify } from '../../lib/utils';
 import { Observer } from '../../lib/core';
 
 const seanceOrigin = 'http://mock';
@@ -8,6 +9,7 @@ describe('Evaluation of Medium lifecycles', () => {
 
     const params = {
       created: createdMock,
+      destroyed: nullify,
       seanceOrigin
     };
     const medium = new Observer(params);
@@ -43,6 +45,7 @@ describe('Evaluation of Medium lifecycles', () => {
 
     const params = {
       created: createdMock,
+      destroyed: nullify,
       seanceOrigin
     };
 
@@ -69,6 +72,7 @@ describe('Evaluation of Medium lifecycles', () => {
 
     const params = {
       destroyed: destroyedMock,
+      created: nullify,
       seanceOrigin
     };
 
@@ -96,6 +100,7 @@ describe('Evaluation of Medium lifecycles', () => {
     const destroyedMock = jest.fn();
 
     const params = {
+      created: nullify,
       destroyed: destroyedMock,
       seanceOrigin
     };
@@ -122,13 +127,8 @@ describe('Evaluation of Medium lifecycles', () => {
   });
 
   describe('Listener registration', () => {
-    const params = {
-      seanceOrigin
-    };
-
-    const medium = new Observer(params);
-
     it('registers window event listeners upon creation', () => {
+      const medium = makeMedium();
       const mock = jest.spyOn(window, 'addEventListener');
 
       medium.init();
@@ -143,15 +143,9 @@ describe('Evaluation of Medium lifecycles', () => {
   });
 
   describe('Listener removal', () => {
-    const params = {
-      seanceOrigin
-    };
-
-    const medium = new Observer(params);
-
-    medium.init();
-
     it('unregisters window event listeners upon destruction', () => {
+      const medium = makeMedium().init();
+
       const mock = jest.spyOn(window, 'removeEventListener');
 
       window.dispatchEvent(new Event('beforeunload'));

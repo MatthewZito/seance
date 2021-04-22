@@ -1,4 +1,4 @@
-import { EVENT_TYPES, QUERY_TYPES, TIMERS, IDENTIFIERS, purgePromiseJobs } from '../../lib/utils';
+import { EVENT_TYPES, QUERY_TYPES, TIMERS, IDENTIFIERS, purgePromiseJobs, nullify } from '../../lib/utils';
 import { Observer } from '../../lib/core';
 
 function payload ({ id = IDENTIFIERS.DESTROY_ID, error = null, result = EVENT_TYPES.CLOSE } = {}) {
@@ -16,14 +16,10 @@ function message ({ origin = 'http://mock', data = payload() } = {}) {
   });
 }
 
-const seanceOrigin = 'http://mock';
-
 describe('Evaluation of public API', () => {
   describe('Sequence API', () => {
     it('resolves and returns an API object when a connection is established', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 
@@ -41,9 +37,7 @@ describe('Evaluation of public API', () => {
     });
 
     it('returns an API object with `get`, `set` and `delete` methods, each contextually bound', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 
@@ -64,60 +58,54 @@ describe('Evaluation of public API', () => {
 
     });
 
-    // it(`recurses and attempts connection up to ${TIMERS.MAX_CONN_ATTEMPTS} times before rejecting`, async () => {
-    //   const medium = new Observer({
-    //     seanceOrigin
-    //   });
+    it(`recurses and attempts connection up to ${TIMERS.MAX_CONN_ATTEMPTS} times before rejecting`, async () => {
+      const medium = makeMedium();
 
-    //   medium.init();
+      medium.init();
 
-    //   const callbackMock = jest.fn();
-    //   const errMock = jest.fn();
+      const callbackMock = jest.fn();
+      const errMock = jest.fn();
 
-    //   expect(callbackMock).not.toHaveBeenCalled();
-    //   expect(errMock).not.toHaveBeenCalled();
+      expect(callbackMock).not.toHaveBeenCalled();
+      expect(errMock).not.toHaveBeenCalled();
 
-    //   jest.useRealTimers();
-    //   jest.setTimeout(8000);
+      jest.useRealTimers();
+      jest.setTimeout(8000);
 
-    //   setTimeout(() => {
-    //     medium.preflight = TIMERS.CONN_FULFILLED;
-    //   }, TIMERS.CONN_FULFILLED * 2);
+      setTimeout(() => {
+        medium.preflight = TIMERS.CONN_FULFILLED;
+      }, TIMERS.CONN_FULFILLED * 2);
 
-    //   await medium.sequence(10).then(callbackMock).catch(errMock);
+      await medium.sequence(10).then(callbackMock).catch(errMock);
 
-    //   expect(callbackMock).toHaveBeenCalled();
-    //   expect(errMock).not.toHaveBeenCalled();
-    // });
+      expect(callbackMock).toHaveBeenCalled();
+      expect(errMock).not.toHaveBeenCalled();
+    });
 
-    // it(`rejects if unable to establish a connection after recursing ${TIMERS.MAX_CONN_ATTEMPTS}`, async () => {
-    //   const medium = new Observer({
-    //     seanceOrigin
-    //   });
+    it(`rejects if unable to establish a connection after recursing ${TIMERS.MAX_CONN_ATTEMPTS}`, async () => {
+      const medium = makeMedium();
 
-    //   medium.init();
+      medium.init();
 
-    //   const callbackMock = jest.fn();
-    //   const errMock = jest.fn();
+      const callbackMock = jest.fn();
+      const errMock = jest.fn();
 
-    //   expect(callbackMock).not.toHaveBeenCalled();
-    //   expect(errMock).not.toHaveBeenCalled();
+      expect(callbackMock).not.toHaveBeenCalled();
+      expect(errMock).not.toHaveBeenCalled();
 
-    //   jest.useRealTimers();
-    //   jest.setTimeout(8000);
+      jest.useRealTimers();
+      jest.setTimeout(8000);
 
-    //   await medium.sequence(10).then(callbackMock).catch(errMock);
+      await medium.sequence(10).then(callbackMock).catch(errMock);
 
-    //   expect(callbackMock).not.toHaveBeenCalled();
-    //   expect(errMock).toHaveBeenCalled();
-    // });
+      expect(callbackMock).not.toHaveBeenCalled();
+      expect(errMock).toHaveBeenCalled();
+    });
   });
 
   describe('API method `get`', () => {
     it('throws if a non-array is provided as input', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 
@@ -134,9 +122,7 @@ describe('Evaluation of public API', () => {
     });
 
     it('throws if provided arguments array contains types other than strings, numbers', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 
@@ -150,9 +136,7 @@ describe('Evaluation of public API', () => {
     });
 
     it('throws if a non-function is provided as a callback', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 
@@ -167,9 +151,7 @@ describe('Evaluation of public API', () => {
     });
 
     it('resolves the provided callback when a response of a corresponding id is received', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       const observedEmit = jest.spyOn(medium, 'emit');
 
@@ -223,9 +205,7 @@ describe('Evaluation of public API', () => {
 
   describe('API method `set`', () => {
     it('throws if a non-array is provided as input', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 
@@ -242,9 +222,7 @@ describe('Evaluation of public API', () => {
     });
 
     it('throws if a non-function is provided as a callback', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 
@@ -259,9 +237,7 @@ describe('Evaluation of public API', () => {
     });
 
     it('resolves the provided callback when a response of a corresponding id is received', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 
@@ -308,9 +284,7 @@ describe('Evaluation of public API', () => {
     });
 
     it('throws if provided arguments array contains types other than objects', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 
@@ -332,9 +306,7 @@ describe('Evaluation of public API', () => {
 
   describe('Base public interface laws', () => {
     it('exposes only public methods in each sequence', async () => {
-      const medium = new Observer({
-        seanceOrigin
-      });
+      const medium = makeMedium();
 
       medium.init();
 

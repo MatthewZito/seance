@@ -2,11 +2,13 @@ import { Observer } from '../../lib/core';
 
 const seanceOrigin = 'http://mock';
 
-import { frameDefaults } from '../../lib/utils';
+import { frameDefaults, nullify } from '../../lib/utils';
 
 describe('Evaluation of Seance proxying', () => {
   const params = {
-    seanceOrigin
+    seanceOrigin,
+    created: nullify,
+    destroyed: nullify
   };
 
   const medium = new Observer(params).init();

@@ -3,7 +3,8 @@ import {
   QUERY_TYPES,
   TIMERS,
   IDENTIFIERS,
-  purgePromiseJobs
+  purgePromiseJobs,
+  nullify
  } from '../../lib/utils';
 
 import { Observer } from '../../lib/core';
@@ -25,9 +26,7 @@ function message ({ origin = 'http://mock', data = payload() } = {}) {
 
 describe('Evaluation of outbound, unicast messages and communications', () => {
   it('emits a `MOUNT` message when the mount lifecycle is invoked', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedEmit = jest.spyOn(medium, 'emit');
 
@@ -46,9 +45,7 @@ describe('Evaluation of outbound, unicast messages and communications', () => {
   });
 
   it('emits an `UNMOUNT` message when the unMount lifecycle is invoked', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedEmit = jest.spyOn(medium, 'emit');
     medium.poll = jest.fn()
@@ -66,9 +63,7 @@ describe('Evaluation of outbound, unicast messages and communications', () => {
   });
 
   it('emits a `SYN` message at n interval once `poll` is invoked', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedEmit = jest.spyOn(medium, 'emit');
 
@@ -87,9 +82,7 @@ describe('Evaluation of outbound, unicast messages and communications', () => {
   });
 
   it('emits a `GET` message when the get api is called', async () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedEmit = jest.spyOn(medium, 'emit');
 
@@ -113,9 +106,7 @@ describe('Evaluation of outbound, unicast messages and communications', () => {
   });
 
   it('emits a `SET` message when the set api is called', async () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedEmit = jest.spyOn(medium, 'emit');
 
@@ -139,9 +130,7 @@ describe('Evaluation of outbound, unicast messages and communications', () => {
   });
 
   it('emits a `DELETE` message when the delete api is called', async () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedEmit = jest.spyOn(medium, 'emit');
 
@@ -167,9 +156,7 @@ describe('Evaluation of outbound, unicast messages and communications', () => {
 
 describe('Evaluation of inbound messages and communications', () => {
   it('receives messages via the `message` event', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedRecv = jest.spyOn(medium, 'recv');
 
@@ -191,9 +178,7 @@ describe('Evaluation of inbound messages and communications', () => {
 
 
   it('drops messages from origins other than that of the Seance', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedRecv = jest.spyOn(medium, 'recv');
 
@@ -211,9 +196,7 @@ describe('Evaluation of inbound messages and communications', () => {
   });
 
   it('drops messages that do not have data', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedRecv = jest.spyOn(medium, 'recv');
 
@@ -230,9 +213,7 @@ describe('Evaluation of inbound messages and communications', () => {
   });
 
   it('drops messages whose data is not serialized', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedRecv = jest.spyOn(medium, 'recv');
 
@@ -254,9 +235,7 @@ describe('Evaluation of inbound messages and communications', () => {
   });
 
   it('drops messages whose data does not contain an id OR an error and result', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedRecv = jest.spyOn(medium, 'recv');
 
@@ -287,9 +266,7 @@ describe('Evaluation of inbound messages and communications', () => {
 
   it('sets the `preflight` flag to `null` upon receipt of a destroy id and close event', () => {
     // this is the default impl of a message for this suite, so...
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedRecv = jest.spyOn(medium, 'recv');
 
@@ -306,9 +283,7 @@ describe('Evaluation of inbound messages and communications', () => {
   });
 
   it('returns upon receipt of a destroy id and close event', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedMapCheck = jest.spyOn(medium.responses, 'has');
 
@@ -321,9 +296,7 @@ describe('Evaluation of inbound messages and communications', () => {
   });
 
   it('sets the `preflight` flag to `fulfilled` upon receipt of an ACK signal', () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const id = '_V_';
     // ensure the id is in the responses map, else the Medium will drop message
@@ -337,9 +310,7 @@ describe('Evaluation of inbound messages and communications', () => {
   });
 
   it('invokes the callback from the responses map that corresponds to the message id', async () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedEmit = jest.spyOn(medium, 'emit');
 
@@ -381,9 +352,7 @@ describe('Evaluation of inbound messages and communications', () => {
   });
 
   it('removes the received id from the responses map in all cases of an accepted message', async () => {
-    const medium = new Observer({
-      seanceOrigin: 'http://mock'
-    });
+    const medium = makeMedium();
 
     const observedEmit = jest.spyOn(medium, 'emit');
 

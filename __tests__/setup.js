@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 
-import { Observable } from '../lib/core';
+import { Observable, Observer } from '../lib/core';
 import { nullify, generateUUID, EVENT_TYPES } from '../lib/utils';
 
 beforeAll(() => {
@@ -36,6 +36,14 @@ beforeAll(() => {
     }));
 
     return [observed, origin];
+  }
+
+  global.makeMedium = function () {
+    return new Observer({
+      seanceOrigin: 'http://mock',
+      created: nullify,
+      destroyed: nullify
+    });
   }
 });
 

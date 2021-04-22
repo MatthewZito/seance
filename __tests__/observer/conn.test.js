@@ -1,15 +1,18 @@
-import { EVENT_TYPES, TIMERS } from '../../lib/utils';
+import { EVENT_TYPES, TIMERS, nullify } from '../../lib/utils';
 import { Observer } from '../../lib/core';
 
 const seanceOrigin = 'http://mock';
 
+const params = {
+  seanceOrigin,
+  created: nullify,
+  destroyed: nullify
+};
+
 describe('Evaluation of networking and connection initializers', () => {
-  const params = {
-    seanceOrigin
-  };
   describe('SYN Unicast', () => {
     it('initializes a polling SYN broadcast after `init`', () => {
-      const medium = new Observer(params);
+      const medium = makeMedium();
       const observedPoll = jest.spyOn(medium, 'poll');
 
       expect(observedPoll).not.toHaveBeenCalled();
@@ -22,7 +25,7 @@ describe('Evaluation of networking and connection initializers', () => {
     });
 
     it('invokes `emit` to send the SYN broadcast on each interval', () => {
-      const medium = new Observer(params);
+      const medium = makeMedium();
       const observedEmit = jest.spyOn(medium, 'emit');
 
       expect(observedEmit).not.toHaveBeenCalled();
@@ -37,7 +40,7 @@ describe('Evaluation of networking and connection initializers', () => {
     });
 
     it('invokes `emit` with SYN message \'packets\'', () => {
-      const medium = new Observer(params);
+      const medium = makeMedium();
       const observedEmit = jest.spyOn(medium, 'emit');
 
       medium.init();
@@ -50,7 +53,7 @@ describe('Evaluation of networking and connection initializers', () => {
     });
 
     it('invokes `emit` with SYN message \'packets\'', () => {
-      const medium = new Observer(params);
+      const medium = makeMedium();
       const observedEmit = jest.spyOn(medium, 'emit');
 
       medium.init();
