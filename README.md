@@ -1,5 +1,11 @@
 # Séance | Cross-origin State Sharing
 
+[![Build Status](https://travis-ci.org/MatthewZito/seance.svg?branch=master)](https://travis-ci.org/MatthewZito/seance)
+[![Coverage Status](https://coveralls.io/repos/github/MatthewZito/seance/badge.svg)](https://coveralls.io/github/MatthewZito/seance)
+[![npm version](https://badge.fury.io/js/seance-js.svg)](https://badge.fury.io/js/seance-js)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
 Séance enables cross-domain state sharing via the browser's local storage.
 
 A Séance can be agreed upon by any number of domains. A `Seance` instance is initialized at the domain you want to serve as the *provider*. Each domain that subscribes to this shared state registers a `Medium`, allowing it to observe the shared state, and perform read / write transactions with it.
