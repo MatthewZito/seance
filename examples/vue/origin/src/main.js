@@ -1,7 +1,6 @@
 import Vue from 'vue';
-import App from './App.vue';
-import Vue from 'vue';
 import VueRouter from 'vue-router';
+import App from './App.vue';
 
 Vue.use(VueRouter);
 
@@ -20,7 +19,7 @@ new Vue({
       {
         path: '/about',
         name: 'About',
-        component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+        component: () => import(/* webpackChunkName: "about" */ '@/views/About.vue')
       }
     ]
   }),

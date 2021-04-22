@@ -31,6 +31,9 @@
       "plugin:vue/essential",
       "eslint:recommended"
     ],
+    "ignorePatterns": [
+      "../../../dist/seance.umd"
+    ],
     "parserOptions": {
       "parser": "babel-eslint"
     },
